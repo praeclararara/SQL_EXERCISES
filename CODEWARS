@@ -1,0 +1,94 @@
+SQL Basics: Simple JOIN and RANK
+
+For this challenge you need to create a simple SELECT statement that will return all columns from the people table, and join to the sales table so that you can return the COUNT of all sales and RANK each person by their sale_count.
+
+people table schema
+id
+name
+sales table schema
+id
+people_id
+sale
+price
+You should return all people fields as well as the sale count as "sale_count" and the rank as "sale_rank".
+
+SOLUTION
+
+SQL:
+SELECT p.id, p.name, 
+  COUNT(s.sale) AS sale_count, 
+  RANK() OVER (PARTITION BY p.id ORDER BY p.id DESC) AS sale_rank 
+FROM people p
+  INNER JOIN sales s
+  ON p.id = s.people_id
+  GROUP BY p.id;
+  ////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////
+  
+  MULTIPLY
+  This code does not execute properly. Try to figure out why.
+  SELECT price + amount AS total FROM items
+  
+  SOLUTION
+  SELECT price * amount AS total FROM items
+  /////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+  
+  SQL Basics: Create a FUNCTION
+  For this challenge you need to create a basic Increment function which Increments on the age field of the peoples table.
+
+The function should be called increment, it needs to take 1 integer and increment that number by 1.
+
+You may query the people table while testing but the query must only contain the function on your final submit.
+
+important: you must remove all comments when submitting the kata.
+people table schema
+id
+name
+age
+
+SOLUTION
+create function increment (i integer) returns integer as $$
+begin
+    return i + 1;
+end;
+$$ language plpgsql;
+//////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////
+
+SQL Bug Fixing: Fix the JOIN
+Timmys been moved into the database divison of his software company but as we know Timmy loves making mistakes. Help Timmy keep his job by fixing his query...
+
+Timmy works for a statistical analysis company and has been given a task of calculating the highest average salary for a given job, the sample is compiled of 100 applicants each with a job and a salary. Timmy must display each unique job, the total average salary, the total people and the total salary and order by highest average salary. Timmy has some bugs in his query, help Timmy fix his query so he can keep his job!
+
+people table schema
+id
+name
+job table schema
+id
+people_id
+job_title
+salary
+resultant table schema
+job_title (unique)
+average_salary (float, 2 dp)
+total_people (int)
+total_salary (float, 2 dp)
+
+SOLUTION
+SELECT 
+DISTINCT(j.job_title), 
+CAST(ROUND(SUM(j.salary)/COUNT(p), 2) AS float) as average_salary,
+COUNT(p.id) as total_people,
+CAST(ROUND(SUM(j.salary), 2) AS float) as total_salary
+FROM people p
+JOIN job j
+ON p.id = j.people_id
+GROUP BY j.job_title
+ORDER BY average_salary desc;
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+  
