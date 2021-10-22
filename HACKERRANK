@@ -125,6 +125,43 @@ from STATION
 where LAT_N > 38.7780);
 ///////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
+Binary Tree Nodes
+You are given a table, BST, containing two columns: N and P,
+where N represents the value of a node in Binary Tree, and P is the parent of N.
+Write a query to find the node type of Binary Tree ordered by the value of the node. Output one of the following for each node:
+Root: If node is root node.
+Leaf: If node is leaf node.
+Inner: If node is neither root nor leaf node.
+
+SOLUTION
+SELECT N, IF(P IS NULL, 'Root',
+IF((SELECT COUNT(*) FROM BST WHERE P=B.N)>0, 'Inner', 'Leaf'))
+FROM BST AS B ORDER BY N;
+////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+
+15 Days of Learning SQL
+select
+    submission_date,
+    (select count(distinct hacker_id)
+     from submissions as s2
+     where s2.submission_date = s1.submission_date and
+     (select count(distinct s3.submission_date)
+      from submissions as s3
+      where s3.hacker_id = s2.hacker_id and s3.submission_date < s1.submission_date) = datediff(s1.submission_date, '2016-03-01')),
+    (select hacker_id
+     from submissions as s2
+     where s2.submission_date = s1.submission_date
+     group by hacker_id
+     order by count(submission_id) desc, hacker_id limit 1) as id,
+    (select name from hackers where hacker_id = id)
+from
+    (select distinct submission_date from submissions) as s1
+group by submission_date;
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 
