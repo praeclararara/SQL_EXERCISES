@@ -730,11 +730,131 @@ left join Product p on s.product_id = p.product_id
             where p.product_name = 'iPhone'
     );
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+1084. Sales Analysis III
+Table: Product
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| product_id   | int     |
+| product_name | varchar |
+| unit_price   | int     |
++--------------+---------+
+product_id is the primary key of this table.
+Table: Sales
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| seller_id   | int     |
+| product_id  | int     |
+| buyer_id    | int     |
+| sale_date   | date    |
+| quantity    | int     |
+| price       | int     |
++------ ------+---------+
+This table has no primary key, it can have repeated rows.
+product_id is a foreign key to Product table.
 
+Write an SQL query that reports the products that were only sold in spring 2019. That is, between 2019-01-01 and 2019-03-31 inclusive.
+The query result format is in the following example:
 
+Product table:
++------------+--------------+------------+
+| product_id | product_name | unit_price |
++------------+--------------+------------+
+| 1          | S8           | 1000       |
+| 2          | G4           | 800        |
+| 3          | iPhone       | 1400       |
++------------+--------------+------------+
 
+Sales table:
++-----------+------------+----------+------------+----------+-------+
+| seller_id | product_id | buyer_id | sale_date  | quantity | price |
++-----------+------------+----------+------------+----------+-------+
+| 1         | 1          | 1        | 2019-01-21 | 2        | 2000  |
+| 1         | 2          | 2        | 2019-02-17 | 1        | 800   |
+| 2         | 2          | 3        | 2019-06-02 | 1        | 800   |
+| 3         | 3          | 4        | 2019-05-13 | 2        | 2800  |
++-----------+------------+----------+------------+----------+-------+
 
+Result table:
++-------------+--------------+
+| product_id  | product_name |
++-------------+--------------+
+| 1           | S8           |
++-------------+--------------+
+The product with id 1 was only sold in spring 2019 while the other two were sold after.
 
+SOLUTION
+select Product.product_id, product_name
+from Product left join Sales
+on Product.product_id = Sales.product_id
+group by product_id
+having min(sale_date) >= '2019-01-01' and max(sale_date) <= '2019-03-31';
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+1179. Reformat Department Table
+Table: Department
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| revenue     | int     |
+| month       | varchar |
++-------------+---------+
+(id, month) is the primary key of this table.
+The table has information about the revenue of each department per month.
+The month has values in ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].
+ 
+Write an SQL query to reformat the table such that there is a department id column and a revenue column for each month.
+Return the result table in any order.
+The query result format is in the following example.
+Example 1:
+Input: 
+Department table:
++------+---------+-------+
+| id   | revenue | month |
++------+---------+-------+
+| 1    | 8000    | Jan   |
+| 2    | 9000    | Jan   |
+| 3    | 10000   | Feb   |
+| 1    | 7000    | Feb   |
+| 1    | 6000    | Mar   |
++------+---------+-------+
+Output: 
++------+-------------+-------------+-------------+-----+-------------+
+| id   | Jan_Revenue | Feb_Revenue | Mar_Revenue | ... | Dec_Revenue |
++------+-------------+-------------+-------------+-----+-------------+
+| 1    | 8000        | 7000        | 6000        | ... | null        |
+| 2    | 9000        | null        | null        | ... | null        |
+| 3    | null        | 10000       | null        | ... | null        |
++------+-------------+-------------+-------------+-----+-------------+
+Explanation: The revenue from Apr to Dec is null.
+Note that the result table has 13 columns (1 for the department id + 12 for the months).
 
+SOLUTION
+SELECT 
+    id, 
+    sum( if(month = 'Jan', revenue, null) ) AS Jan_Revenue,  
+    sum( if(month = 'Feb', revenue, null) ) AS Feb_Revenue, 
+    sum( if(month = 'Mar', revenue, null) ) AS Mar_Revenue,
+    sum( if(month = 'Apr', revenue, null) ) AS Apr_Revenue,
+    sum( if(month = 'May', revenue, null) ) AS May_Revenue,
+    sum( if(month = 'Jun', revenue, null) ) AS Jun_Revenue,
+    sum( if(month = 'Jul', revenue, null) ) AS Jul_Revenue,
+    sum( if(month = 'Aug', revenue, null) ) AS Aug_Revenue,
+    sum( if(month = 'Sep', revenue, null) ) AS Sep_Revenue,
+    sum( if(month = 'Oct', revenue, null) ) AS Oct_Revenue,
+    sum( if(month = 'Nov', revenue, null) ) AS Nov_Revenue,
+    sum( if(month = 'Dec', revenue, null) ) AS Dec_Revenue
+        
+FROM 
+    Department  
+GROUP BY 
+    id;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
