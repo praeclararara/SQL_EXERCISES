@@ -1,4 +1,4 @@
-# SQL_EXERCISES
+# SQL_QUERIES
 ## SQL: a student's journey
 
 I copied here the code I used to solve SQL queries in Leetcode, Hackerrank and Codewars.
